@@ -28,7 +28,7 @@ npm i supertest @types/supertest
 ### Nodemon
 `npm i nodemon`
 
-### Usage
+## Usage
 To run this project enter `npm run start` in the terminal, now the server is running on port `3000`, it can be accessed at `http://localhost:3000`
 You can use display and resize images by entering three parameters, `name, width, height` in the `api` route
 #### Example
