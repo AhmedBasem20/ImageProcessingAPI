@@ -9,21 +9,38 @@ router.get('/', (req: Request, res: Response) => {
     const name = req.query.name as string;
     const height = req.query.height as unknown as string;
     const width = req.query.width as unknown as string;
-    if (isNaN(parseInt(width)) || isNaN(parseInt(height)))
-    {
-        res.send("خخخخخخخخخخ اكتب كسم رقم وبطل بعبصة");
-    }
-        //making new folder for resized images.
-        pfs.mkdir(path.join(__dirname, "..","..","..", "images", "thumbnails"));
+
+        if (name == undefined)
+        {
+            res.send("Missing input values, please make sure to enter the image name, width and height");
+        }
+        //making thumbnails folder for storing resized images on it.
+        const newDir = fs.existsSync(path.join(__dirname, "..","..","..", "images", "thumbnails"));
+        if (!newDir)
+        {
+            pfs.mkdir(path.join(__dirname, "..","..","..", "images", "thumbnails"));
+        }
 
         const filepath = path.join(__dirname, "..","..","..", "images", name);
+        const Exist = () => {
+           return fs.existsSync(filepath);
+        }
+        if (isNaN(parseInt(width)) || isNaN(parseInt(height)))
+            {
+                if (Exist()){
+                    res.send("Wrong input type, please make sure to enter an integer value");
+                }
+               
+            }
         const filetest = path.join(__dirname, "..","..","..", "images", "thumbnails", width+height+name);
-        const exist = fs.existsSync(filepath);
-        const resized = fs.existsSync(filetest);
+        const resized = () => {
+            return fs.existsSync(filetest);
+        }
 
-        if(exist)
-        {   
-            if(resized)
+        if(Exist())
+        {  
+            
+            if (resized())
             {
                 //return the same image if it was processed before with the same width and height.
                 res.sendFile(filetest);
@@ -34,13 +51,12 @@ router.get('/', (req: Request, res: Response) => {
 
                 //sharp on width and height to resize image
                 sharp(filepath).resize(parseInt(width), parseInt(height)).toFile(filetest);
-                console.log("hi");
 
                 setTimeout( (): void => {
 
                     res.sendFile(filetest);
                     
-                }, 500)
+                }, 1000)
                 
             }
            
@@ -48,7 +64,8 @@ router.get('/', (req: Request, res: Response) => {
 
         else
         {
-            res.send("اكتب كسم اسم الصورة صح");
+            res.send("Missing input values, please make sure to enter the image name, width and height");
         }
 });
+
 export default router;
